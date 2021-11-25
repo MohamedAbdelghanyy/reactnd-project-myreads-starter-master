@@ -5,15 +5,8 @@ import { Link } from "react-router-dom"
 import * as BooksAPI from '../BooksAPI'
 
 const BookSearch =(props) => {
-
     let [searchBooks, setBooks] = useState([]);
     let [query, setquery] = useState("");
-
-    BookSearch.porpTypes = {
-        storedBooks: PropTypes.array.isRequired,
-        onUpdateShelf: PropTypes.func.isRequired
-    }
-
     const updateSearchQuery = (query) => {
         setquery(query);
         BooksAPI.search(query).then((searchResults) => {
@@ -30,7 +23,10 @@ const BookSearch =(props) => {
             setBooks(searchResults);
         })
     }
-
+    BookSearch.porpTypes = {
+        storedBooks: PropTypes.array.isRequired,
+        onUpdateShelf: PropTypes.func.isRequired
+    }
     return  (<div className="search-books">
                 <div className="search-books-bar">
                     <Link className="close-search" to="/">Close</Link>
