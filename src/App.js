@@ -1,6 +1,6 @@
 import React from 'react'
-import BookShelf from './comps/BookShelf'
-import BookSearch from './comps/BookSearch'
+import Book from './comps/Book'
+import SearchBooks from './comps/SearchBooks'
 import * as BooksAPI from './BooksAPI'
 import { Link } from 'react-router-dom'
 import { Routes, Route } from 'react-router'
@@ -9,8 +9,8 @@ import './App.css'
 
 
 const BooksApp = () => {
-  let [books, setbooks] = useState([]);
   let [flip, setflip] = useState(true);
+  let [books, setbooks] = useState([]);
 
   useEffect(() => {
     BooksAPI.getAll().then((books) => {
@@ -18,15 +18,15 @@ const BooksApp = () => {
     })
   }, []);
 
-  const updateShelf = (book, shelf) => {
-    const updateIndex = books.findIndex((b) => b.id === book.id)
+  const changeShelf = (book, shelf) => {
+    const updateBookIndex = books.findIndex((bookX) => bookX.id === book.id)
     const updatedBookList = books
 
-    if(updateIndex === -1){
+    if(updateBookIndex === -1){
       book.shelf = shelf
       updatedBookList.push(book)
     }else{
-      updatedBookList[updateIndex].shelf = shelf
+      updatedBookList[updateBookIndex].shelf = shelf
     }
 
     setbooks(updatedBookList);
@@ -46,27 +46,48 @@ const BooksApp = () => {
             </div>
             <div className="list-books-content">
               <div>
-                <BookShelf
-                  key="currentlyReading"
-                  className="bookshelf"
-                  title="Currently Reading"
-                  books={books.filter((book) => book.shelf === "currentlyReading")}
-                  updateShelf={updateShelf}
-                />
-                <BookShelf
-                  key="wantToRead"
-                  className="bookshelf"
-                  title="Want to Read"
-                  books={books.filter((book) => book.shelf === "wantToRead")}
-                  updateShelf={updateShelf}
-                />
-                <BookShelf
-                  key="read"
-                  className="bookshelf"
-                  title="Read"
-                  books={books.filter((book) => book.shelf === "read")}
-                  updateShelf={updateShelf}
-                />
+                <div className="bookshelf">
+                  <h2 className="bookshelf-title">Currently Reading</h2>
+                  <div className="bookshelf-books">
+                      <ol className="books-grid">
+                          {books.filter((book) => book.shelf === "currentlyReading").map((book) => (
+                          <Book  
+                              key={book.id}
+                              onShelfChange={changeShelf}
+                              bookData={book}
+                          />                        
+                          ))}
+                      </ol>
+                  </div>
+                </div>
+                <div className="bookshelf">
+                  <h2 className="bookshelf-title">Want to Read</h2>
+                  <div className="bookshelf-books">
+                      <ol className="books-grid">
+                          {books.filter((book) => book.shelf === "wantToRead").map((book) => (
+                          <Book  
+                              key={book.id}
+                              onShelfChange={changeShelf}
+                              bookData={book}
+                          />                        
+                          ))}
+                      </ol>
+                  </div>
+                </div>
+                <div className="bookshelf">
+                  <h2 className="bookshelf-title">Read</h2>
+                  <div className="bookshelf-books">
+                      <ol className="books-grid">
+                          {books.filter((book) => book.shelf === "read").map((book) => (
+                          <Book  
+                              key={book.id}
+                              onShelfChange={changeShelf}
+                              bookData={book}
+                          />                        
+                          ))}
+                      </ol>
+                  </div>
+                </div>
               </div>
             </div>
             <div className="open-search">
@@ -75,9 +96,9 @@ const BooksApp = () => {
           </div>
         } />
         <Route exact path='/search' element={
-          <BookSearch
-            storedBooks={books}
-            onUpdateShelf={updateShelf}
+          <SearchBooks
+            allBooks={books}
+            onShelfChange={changeShelf}
           />
         } />
         </Routes>
