@@ -8,13 +8,12 @@ class SearchBooks extends React.Component {
 
     static propTypes = {
         allBooks: PropTypes.array.isRequired,
-        changeShelf: PropTypes.func.isRequired
+        onShelfChange: PropTypes.func.isRequired
     };
     
     state = {
         searchKey: '',
-        searchBooksList: [],
-        isErr: false
+        searchBooksList: []
     };
 
     APISearch () {
